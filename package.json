@@ -8,6 +8,7 @@
     "build": "tsc",
     "prestart": "npm run build",
     "start": "node ./bin/www",
+    "dev": "nodemon exec",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
@@ -25,6 +26,7 @@
     "@types/mongoose": "^5.3.20",
     "@types/morgan": "^1.7.35",
     "@types/node": "^11.9.5",
+    "nodemon": "^1.18.10",
     "tslint": "^5.13.0",
     "typescript": "^3.3.3333"
   }

@@ -3,7 +3,7 @@
 /**
  * Module dependencies.
  */
-
+var dotenv = require("dotenv").config();
 var app = require("../dist/app").default;
 var debug = require("debug")("music-jinn-api:server");
 var http = require("http");
