@@ -16,7 +16,11 @@ router.get("/", (req, res) => {
     const dbQuery = { moods: "" };
     const queryStr = req.query;
     if (queryStr) {
-      dbQuery.moods = queryStr.mood;
+      if (queryStr.wantToStay) {
+        dbQuery.moods = queryStr.mood;
+      } else {
+        // add opposite mood support
+      }
     }
     const collection = client.db("musicjinn").collection("songs");
 
