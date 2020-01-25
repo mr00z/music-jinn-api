@@ -3,7 +3,13 @@
   "extends": ["tslint:recommended"],
   "jsRules": {},
   "rules": {
-    "trailing-comma": [false]
+    "trailing-comma": [false],
+    "curly": false,
+    "no-console": {
+      "severity": "warning",
+      "options": ["debug", "info", "log", "time", "timeEnd", "trace"]
+    },
+    "object-literal-sort-keys": false
   },
   "rulesDirectory": []
 }
