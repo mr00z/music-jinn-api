@@ -1,11 +1,18 @@
-import mongoose, { Document, Schema } from "mongoose";
+import mongoose, { Document, Schema } from 'mongoose';
 
-export interface ISong extends Document {
+export interface ISong {
   name: string;
   author: string;
   genre: string;
   moods: string[];
 }
+
+export interface ISongQuery extends ISong {
+  page: number;
+  resultsPerPage: number;
+}
+
+export interface ISongDocument extends ISong, Document {}
 
 const SongSchema: Schema = new Schema({
   name: { type: String, required: true },
@@ -14,4 +21,4 @@ const SongSchema: Schema = new Schema({
   moods: [String]
 });
 
-export default mongoose.model<ISong>("Song", SongSchema);
+export default mongoose.model<ISongDocument>('Song', SongSchema);
