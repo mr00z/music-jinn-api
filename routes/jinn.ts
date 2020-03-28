@@ -10,7 +10,7 @@ const uri = process.env.MONGO_DB;
 
 const moodsMap = new MoodsMap(moodsDict);
 
-router.get('/byMood/', (req: Request, res: Response) => {
+router.get('/byMood/', async (req: Request, res: Response) => {
   const dbQuery = { moods: '' };
   const queryStr = req.query;
   const { mood } = queryStr;
@@ -25,26 +25,22 @@ router.get('/byMood/', (req: Request, res: Response) => {
     }
   }
 
-  mongoose.connect(uri, { useNewUrlParser: true });
-  const db = mongoose.connection;
-  db.once('open', async () => {
-    try {
-      const queryResult: ISongDocument | ISongDocument[] = await Song.find(
-        dbQuery
-      ).exec();
+  await mongoose.connect(uri, { useNewUrlParser: true });
+  try {
+    const queryResult: ISongDocument | ISongDocument[] = await Song.find(dbQuery).exec();
 
-      let song: ISong;
+    let song: ISong;
 
-      if (Array.isArray(queryResult)) {
-        if (queryResult.length === 0) return res.status(204).end();
-        else song = queryResult[getRandomIndexForAnArray(queryResult)];
-      } else song = queryResult;
+    if (Array.isArray(queryResult)) {
+      if (queryResult.length === 0) return res.status(204).end();
+      else song = queryResult[getRandomIndexForAnArray(queryResult)];
+    } else song = queryResult;
 
-      res.send(song);
-    } catch (e) {
-      res.status(500).send(e);
-    }
-  });
+    res.send(song);
+  } catch (e) {
+    res.status(500).send(e);
+  }
+  mongoose.connection.close();
 });
 
 export default router;
