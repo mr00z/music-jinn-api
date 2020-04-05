@@ -2,7 +2,7 @@ import express, { Request, Response } from 'express';
 import mongoose from 'mongoose';
 import MoodsMap from '../helpers/MoodsMap';
 import moodsDict from '../helpers/moodsOppositesDict';
-import Song, { ISongDocument, ISong } from '../models/Song';
+import Song, { ISongDocument } from '../models/Song';
 import { getRandomIndexForAnArray } from '../helpers/utils';
 
 const router = express.Router();
@@ -29,12 +29,15 @@ router.get('/byMood/', async (req: Request, res: Response) => {
   try {
     const queryResult: ISongDocument | ISongDocument[] = await Song.find(dbQuery).exec();
 
-    let song: ISong;
+    let song: ISongDocument;
 
     if (Array.isArray(queryResult)) {
       if (queryResult.length === 0) return res.status(204).end();
       else song = queryResult[getRandomIndexForAnArray(queryResult)];
     } else song = queryResult;
+
+    if (!song.servicesData) await song.initializeServicesData();
+    else await song.updateServicesData();
 
     res.send(song);
   } catch (e) {
