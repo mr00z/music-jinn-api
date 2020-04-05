@@ -1,6 +1,5 @@
 import mongoose, { Document, Schema } from 'mongoose';
 import IYouTubeServiceData from '../integrations/youtube/IYouTubeServiceData';
-import YouTubeConnector from '../integrations/youtube/YouTubeConnector';
 import ConnectorsFactory from '../integrations/ConnectorsFactory';
 import Connectors from '../integrations/ConnectorsEnum';
 
@@ -31,27 +30,27 @@ const SongSchema: Schema = new Schema({
   author: { type: String, required: true },
   genres: { type: [String], required: true },
   moods: [String],
-  servicesData: Object
+  servicesData: Object,
 });
 
-SongSchema.methods.initializeServicesData = async function(): Promise<void> {
+SongSchema.methods.initializeServicesData = async function (): Promise<void> {
   const connectorsFactory = new ConnectorsFactory(this);
+  this.servicesData = {};
   for (const connectorName of Object.values(Connectors)) {
     const connector = connectorsFactory.getConnector(connectorName);
     const serviceData = await connector.getServiceData();
-    this.servicesData = {
-      [connectorName]: {
-        responseData: serviceData,
-        updatedAt: new Date()
-      }
+    this.servicesData[connectorName] = {
+      responseData: serviceData,
+      updatedAt: new Date(),
     };
   }
   await this.save();
 };
 
-SongSchema.methods.updateServicesData = async function(): Promise<void> {
+SongSchema.methods.updateServicesData = async function (): Promise<void> {
   const today = new Date();
   const connectorsFactory = new ConnectorsFactory(this);
+  let isUpdated = false;
 
   for (const serviceName in this.servicesData) {
     if (this.servicesData.hasOwnProperty(serviceName)) {
@@ -61,11 +60,15 @@ SongSchema.methods.updateServicesData = async function(): Promise<void> {
         const serviceData = await connector.getServiceData();
         element.responseData = serviceData;
         element.updatedAt = new Date();
+
+        isUpdated = true;
       }
     }
   }
-  this.markModified('servicesData');
-  await this.save();
+  if (isUpdated) {
+    this.markModified('servicesData');
+    await this.save();
+  }
 };
 
 export default mongoose.model<ISongDocument>('Song', SongSchema);
