@@ -1,27 +1,21 @@
 import express, { Request, Response } from 'express';
 import mongoose from 'mongoose';
-import MoodsMap from '../helpers/MoodsMap';
-import moodsDict from '../helpers/moodsOppositesDict';
 import Song, { ISongDocument } from '../models/Song';
 import { getRandomIndexForAnArray } from '../helpers/utils';
 
 const router = express.Router();
 const uri = process.env.MONGO_DB;
 
-const moodsMap = new MoodsMap(moodsDict);
-
 router.get('/byMood/', async (req: Request, res: Response) => {
-  const dbQuery = { moods: '' };
+  const dbQuery: { moods: string | object } = { moods: '' };
   const queryStr = req.query;
-  const { mood } = queryStr;
   if (queryStr) {
+    const { mood } = queryStr;
+
     if (queryStr.wantToStay === 'true') {
       dbQuery.moods = mood;
     } else {
-      const oppositeMood = moodsMap.getOppositeMood(mood);
-      if (oppositeMood) {
-        dbQuery.moods = oppositeMood;
-      }
+      dbQuery.moods = { $ne: mood };
     }
   }
 
