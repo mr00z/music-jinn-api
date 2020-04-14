@@ -6,12 +6,13 @@ import { join } from 'path';
 
 import indexRouter from './routes/index';
 import moodsRouter from './routes/moods';
+import genresRouter from './routes/genres';
 import jinnRouter from './routes/jinn';
 import songsRouter from './routes/songs';
 
 const corsOptions = {
   optionsSuccessStatus: 200,
-  origin: '*'
+  origin: '*',
 };
 
 const app = express();
@@ -26,6 +27,7 @@ app.use(cookieParser());
 app.use('/', indexRouter);
 app.use('/jinn', jinnRouter);
 app.use('/moods', moodsRouter);
+app.use('/genres', genresRouter);
 app.use('/songs', songsRouter);
 
 export default app;
