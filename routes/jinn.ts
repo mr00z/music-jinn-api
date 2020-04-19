@@ -7,21 +7,27 @@ const router = express.Router();
 const uri = process.env.MONGO_DB;
 
 router.get('/byMood/', async (req: Request, res: Response) => {
-  const dbQuery: { moods: string | object } = { moods: '' };
-  const queryStr = req.query;
-  if (queryStr) {
-    const { mood } = queryStr;
+  const queryStr: { mood: string; wantToStay: string; genres?: string[] | string } = req.query;
 
-    if (queryStr.wantToStay === 'true') {
-      dbQuery.moods = mood;
-    } else {
-      dbQuery.moods = { $ne: mood };
-    }
-  }
+  if (!req.query) res.status(400).end();
 
   await mongoose.connect(uri, { useNewUrlParser: true });
   try {
-    const queryResult: ISongDocument | ISongDocument[] = await Song.find(dbQuery).exec();
+    const dbQuery = Song.find();
+
+    const { mood, wantToStay } = queryStr;
+
+    if (wantToStay === 'true') {
+      dbQuery.where('moods', mood);
+    } else {
+      dbQuery.ne('moods', mood);
+    }
+    if (queryStr.genres) {
+      if (Array.isArray(queryStr.genres)) dbQuery.in('genres', queryStr.genres);
+      else dbQuery.where('genres', queryStr.genres);
+    }
+
+    const queryResult: ISongDocument | ISongDocument[] = await dbQuery.exec();
 
     let song: ISongDocument;
 
