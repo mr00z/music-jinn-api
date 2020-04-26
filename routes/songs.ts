@@ -9,30 +9,30 @@ const DEFAULT_RESULTS_PER_PAGE = 10;
 
 router.get('/', async (req: Request, res: Response) => {
   const queryStr: ISongQuery = req.query;
-  let { page, resultsPerPage } = queryStr;
-  if (!page || !resultsPerPage) {
-    page = DEFAULT_PAGE;
-    resultsPerPage = DEFAULT_RESULTS_PER_PAGE;
-  }
+  const { page, resultsPerPage, query } = queryStr;
+
+  const pageNumber = parseInt(page, 10) || DEFAULT_PAGE;
+  const resultsPerPageNumber = parseInt(resultsPerPage, 10) || DEFAULT_RESULTS_PER_PAGE;
+
   await mongoose.connect(uri, { useNewUrlParser: true });
   try {
     const collationSettings = { locale: 'en', strength: 2 };
 
-    const foundSongs: ISongDocument[] = await Song.find(queryStr)
+    const mongoQuery = query ? { $text: { $search: queryStr.query } } : {};
+
+    const foundSongs: ISongDocument[] = await Song.find(mongoQuery)
       .collation(collationSettings)
-      .skip(resultsPerPage * page - resultsPerPage)
-      .limit(resultsPerPage)
+      .skip(resultsPerPageNumber * pageNumber - resultsPerPageNumber)
+      .limit(resultsPerPageNumber)
       .exec();
 
-    const songsCount = await Song.countDocuments(queryStr)
-      .collation(collationSettings)
-      .exec();
+    const songsCount = await Song.countDocuments(mongoQuery).collation(collationSettings).exec();
 
     res.send({
       songs: foundSongs,
       currentPage: page,
-      pagesCount: Math.ceil(songsCount / resultsPerPage),
-      resultsCount: songsCount
+      pagesCount: Math.ceil(songsCount / resultsPerPageNumber),
+      resultsCount: songsCount,
     });
   } catch (e) {
     res.status(500).send(e);

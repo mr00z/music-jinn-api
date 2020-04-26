@@ -15,9 +15,12 @@ export interface ISong {
   servicesData: IServicesData;
 }
 
-export interface ISongQuery extends ISong {
-  page: number;
-  resultsPerPage: number;
+export interface ISongQuery {
+  page: string;
+  resultsPerPage: string;
+  query: string;
+  genres: string[];
+  moods: string[];
 }
 
 export interface ISongDocument extends ISong, Document {
@@ -32,6 +35,8 @@ const SongSchema: Schema = new Schema({
   moods: [String],
   servicesData: Object,
 });
+
+SongSchema.index({ title: 'text', author: 'text' });
 
 SongSchema.methods.initializeServicesData = async function (): Promise<void> {
   const connectorsFactory = new ConnectorsFactory(this);
