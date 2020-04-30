@@ -7,10 +7,10 @@
   "builds": [{ "src": "app.js", "use": "@now/node-server" }],
   "routes": [
     {
-        "src": "/",
-        "dest": "/app.js",
-        "methods": ["GET"]
-      },
+      "src": "/",
+      "dest": "/app.js",
+      "methods": ["GET"]
+    },
     {
       "src": "/songs",
       "dest": "/routes/songs.js",
@@ -22,5 +22,4 @@
       "methods": ["GET"]
     }
   ]
-}
 }
