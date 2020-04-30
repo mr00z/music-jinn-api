@@ -1,6 +1,6 @@
 {
   "name": "music-jinn-api",
-  "version": 1,
+  "version": 2,
   "env": {
     "MONGO_DB": "@mongodb-uri"
   }
