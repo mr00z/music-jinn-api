@@ -41,6 +41,7 @@ typings/
 
 # Compiled Typescript files
 dist
+api
 
 # Optional npm cache directory
 .npm
