@@ -4,5 +4,23 @@
   "env": {
     "MONGO_DB": "@mongodb-uri"
   },
-  "routes": [{ "src": "/api/(.*)", "dest": "/api/$1" }]
+  "builds": [{ "src": "app.js", "use": "@now/node-server" }],
+  "routes": [
+    {
+        "src": "/",
+        "dest": "/app.js",
+        "methods": ["GET"]
+      },
+    {
+      "src": "/songs",
+      "dest": "/routes/songs.js",
+      "methods": ["GET"]
+    },
+    {
+      "src": "/jinn",
+      "dest": "/routes/jinn.js",
+      "methods": ["GET"]
+    }
+  ]
+}
 }
