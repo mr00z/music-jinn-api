@@ -6,7 +6,7 @@
   },
   "builds": [
     { "src": "/**.ts", "use": "@now/node-server" },
-    { "src": "/(.*)/**.ts", "use": "@now/node-server" }
+    { "src": "/[.*]/**.ts", "use": "@now/node-server" }
   ],
   "routes": [{ "handle": "filesystem" }]
 }
