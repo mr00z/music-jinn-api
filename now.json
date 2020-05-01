@@ -4,9 +4,6 @@
   "env": {
     "MONGO_DB": "@mongodb-uri"
   },
-  "builds": [
-    { "src": "/**.ts", "use": "@now/node-server" },
-    { "src": "/[.*]/**.ts", "use": "@now/node-server" }
-  ],
+  "builds": [{ "src": "*.ts", "use": "@now/node-server" }],
   "routes": [{ "handle": "filesystem" }]
 }
