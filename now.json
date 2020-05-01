@@ -5,5 +5,5 @@
     "MONGO_DB": "@mongodb-uri"
   },
   "builds": [{ "src": "/**.ts", "use": "@now/node-server" }],
-  "routes": [{ "src": "/songs", "destination": "/routes/songs.ts" }]
+  "routes": [{ "src": "/songs", "dest": "/routes/songs.ts" }]
 }
