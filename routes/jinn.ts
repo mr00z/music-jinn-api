@@ -41,7 +41,7 @@ router.get('/byMood/', async (req: Request, res: Response) => {
 
     res.send(song);
   } catch (e) {
-    res.status(500).send(e);
+    res.status(500).send(e.message);
   }
   mongoose.connection.close();
 });

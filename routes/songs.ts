@@ -1,6 +1,6 @@
 import express, { Request, Response } from 'express';
 import mongoose from 'mongoose';
-import Song, { ISongDocument, ISongQuery } from '../models/Song';
+import Song, { ISongDocument, SongQuery } from '../models/Song';
 
 const router = express.Router();
 const uri = process.env.MONGO_DB;
@@ -8,7 +8,7 @@ const DEFAULT_PAGE = 1;
 const DEFAULT_RESULTS_PER_PAGE = 10;
 
 router.get('/', async (req: Request, res: Response) => {
-  const queryStr: ISongQuery = req.query;
+  const queryStr: SongQuery = req.query;
   const { page, resultsPerPage, query } = queryStr;
 
   const pageNumber = parseInt(page, 10) || DEFAULT_PAGE;
@@ -35,7 +35,7 @@ router.get('/', async (req: Request, res: Response) => {
       resultsCount: songsCount,
     });
   } catch (e) {
-    res.status(500).send(e);
+    res.status(500).send(e.message);
   }
   mongoose.connection.close();
 });
