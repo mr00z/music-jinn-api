@@ -1,11 +1,11 @@
 import mongoose, { Document, Schema } from 'mongoose';
-import IYouTubeServiceData from '../integrations/youtube/IYouTubeServiceData';
 import ConnectorsFactory from '../integrations/ConnectorsFactory';
 import Connectors from '../integrations/ConnectorsEnum';
 import { isDateLaterThan } from '../helpers/utils';
+import IServiceData from '../integrations/IServiceData';
 
 interface IServicesData {
-  youtube: IYouTubeServiceData;
+  [key: string]: IServiceData;
 }
 
 export interface ISong {
@@ -48,17 +48,25 @@ class Song extends mongoose.Model implements ISong {
     const connectorsFactory = new ConnectorsFactory(this);
     let isUpdated = false;
 
-    for (const serviceName in this.servicesData) {
-      if (this.servicesData.hasOwnProperty(serviceName)) {
-        const element = (this.servicesData as { [key: string]: any })[serviceName]; // enabling string indexing
+    for (const connectorName of Object.values(Connectors)) {
+      if (this.servicesData.hasOwnProperty(connectorName)) {
+        const element = this.servicesData[connectorName];
+
         if (!element || isDateLaterThan(7, element.updatedAt)) {
-          const connector = connectorsFactory.getConnector(serviceName);
-          const serviceData = await connector.getServiceData();
-          element.responseData = serviceData;
+          const connector = connectorsFactory.getConnector(connectorName);
+
+          element.responseData = await connector.getServiceData();
           element.updatedAt = new Date();
 
           isUpdated = true;
         }
+      } else {
+        const connector = connectorsFactory.getConnector(connectorName);
+        this.servicesData[connectorName] = { responseData: {}, updatedAt: null };
+        this.servicesData[connectorName].responseData = await connector.getServiceData();
+        this.servicesData[connectorName].updatedAt = new Date();
+
+        isUpdated = true;
       }
     }
     if (isUpdated) {
@@ -68,7 +76,7 @@ class Song extends mongoose.Model implements ISong {
   }
   async initializeServicesData(): Promise<void> {
     const connectorsFactory = new ConnectorsFactory(this);
-    this.servicesData = { youtube: null };
+    this.servicesData = { youtube: null, lastfm: null };
     for (const connectorName of Object.values(Connectors)) {
       const connector = connectorsFactory.getConnector(connectorName);
       const serviceData = await connector.getServiceData();

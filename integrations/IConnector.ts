@@ -1,3 +1,6 @@
-interface IConnector {
-  getServiceData: () => Promise<any>;
+import { ISong } from '../models/Song';
+
+export default interface IConnector {
+  song: ISong;
+  getServiceData(): Promise<any>;
 }

@@ -7,5 +7,5 @@ export function getRandomIndexForAnArray(array: any[]): number {
 
 export function isDateLaterThan(days: number, date: Date): boolean {
   const today = new Date();
-  return date.getDate() > today.getDate() - 7;
+  return date.getDate() < today.getDate() - days;
 }
