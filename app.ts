@@ -14,7 +14,7 @@ import apiKeyAuthentication from './middleware/apiKeyAuthentication';
 
 const corsOptions = {
   optionsSuccessStatus: 200,
-  origin: '*',
+  origin: process.env.MUSIC_JINN_CLIENT_URI,
 };
 
 const app = express();
