@@ -1,4 +1,4 @@
-import fetch from 'node-fetch';
+import fetch, { Response } from 'node-fetch';
 import { ISong } from '../../models/Song';
 import IConnector from '../IConnector';
 import GetTrackInfoResponse from './GetTrackInfoResponse';
@@ -13,7 +13,7 @@ class LastFmConnector implements IConnector {
     this.#apiKey = process.env.LAST_FM_API_KEY;
   }
 
-  getTrackInfo(artist: string, track: string): Promise<any> {
+  getTrackInfo(artist: string, track: string): Promise<Response> {
     if (!artist || !track) return;
     return fetch(
       `${this.#endpoint}?method=track.getInfo&api_key=${this.#apiKey}&artist=${artist}&track=${track}&format=json`
@@ -21,7 +21,7 @@ class LastFmConnector implements IConnector {
   }
 
   async getServiceData(): Promise<GetTrackInfoResponse> {
-    const response = await this.getTrackInfo(this.song.author, this.song.title);
+    const response: Response = await this.getTrackInfo(this.song.author, this.song.title);
     const trackInfo: GetTrackInfoResponse = await response.json();
 
     return trackInfo;
