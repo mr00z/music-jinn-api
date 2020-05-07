@@ -21,7 +21,7 @@ class LastFmConnector implements IConnector {
   }
 
   async getServiceData(): Promise<GetTrackInfoResponse> {
-    const response: Response = await this.getTrackInfo(this.song.author, this.song.title);
+    const response = await this.getTrackInfo(this.song.author, this.song.title);
     const trackInfo: GetTrackInfoResponse = await response.json();
 
     return trackInfo;
