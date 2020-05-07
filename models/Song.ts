@@ -16,7 +16,6 @@ export interface ISong {
   servicesData: IServicesData;
 
   updateServicesData(): Promise<void>;
-  initializeServicesData(): Promise<void>;
 }
 
 export type ISongDocument = ISong & Document;
@@ -48,6 +47,8 @@ class Song extends mongoose.Model implements ISong {
     const connectorsFactory = new ConnectorsFactory(this);
     let isUpdated = false;
 
+    if (!this.servicesData) this.servicesData = {};
+
     for (const connectorName of Object.values(Connectors)) {
       if (this.servicesData.hasOwnProperty(connectorName)) {
         const element = this.servicesData[connectorName];
@@ -62,9 +63,11 @@ class Song extends mongoose.Model implements ISong {
         }
       } else {
         const connector = connectorsFactory.getConnector(connectorName);
-        this.servicesData[connectorName] = { responseData: {}, updatedAt: null };
-        this.servicesData[connectorName].responseData = await connector.getServiceData();
-        this.servicesData[connectorName].updatedAt = new Date();
+        const serviceData = await connector.getServiceData();
+        this.servicesData[connectorName] = {
+          responseData: serviceData,
+          updatedAt: new Date(),
+        };
 
         isUpdated = true;
       }
@@ -73,19 +76,6 @@ class Song extends mongoose.Model implements ISong {
       this.markModified('servicesData');
       await this.save();
     }
-  }
-  async initializeServicesData(): Promise<void> {
-    const connectorsFactory = new ConnectorsFactory(this);
-    this.servicesData = { youtube: null, lastfm: null };
-    for (const connectorName of Object.values(Connectors)) {
-      const connector = connectorsFactory.getConnector(connectorName);
-      const serviceData = await connector.getServiceData();
-      this.servicesData[connectorName] = {
-        responseData: serviceData,
-        updatedAt: new Date(),
-      };
-    }
-    await this.save();
   }
 }
 
