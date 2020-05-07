@@ -36,8 +36,7 @@ router.get('/byMood/', async (req: Request, res: Response) => {
       else song = queryResult[getRandomIndexForAnArray(queryResult)];
     } else song = queryResult;
 
-    if (!song.servicesData) await song.initializeServicesData();
-    else await song.updateServicesData();
+    await song.updateServicesData();
 
     res.send(song);
   } catch (e) {
