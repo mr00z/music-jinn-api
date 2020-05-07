@@ -1,5 +1,6 @@
 enum Connectors {
-  YouTube = 'youtube'
+  YouTube = 'youtube',
+  LastFm = 'lastfm',
 }
 
 export default Connectors;
