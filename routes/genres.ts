@@ -13,7 +13,7 @@ router.get('/', async (req, res) => {
   } catch (e) {
     res.status(500).send(e);
   }
-  mongoose.connection.close();
+  await mongoose.connection.close();
 });
 
 export default router;
