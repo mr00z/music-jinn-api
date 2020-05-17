@@ -20,8 +20,9 @@ const corsOptions = {
 
 const app = express();
 
+app.options('*', cors(corsOptions));
+
 app.use(helmet());
-app.use(cors(corsOptions));
 app.use(logger('dev'));
 app.use(json());
 app.use(urlencoded({ extended: false }));
