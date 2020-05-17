@@ -1,9 +1,7 @@
 import express, { Request, Response } from 'express';
-import mongoose from 'mongoose';
 import Song, { ISongDocument, SongQuery } from '../models/Song';
 
 const router = express.Router();
-const uri = process.env.MONGO_DB;
 const DEFAULT_PAGE = 1;
 const DEFAULT_RESULTS_PER_PAGE = 10;
 
@@ -14,7 +12,6 @@ router.get('/', async (req: Request, res: Response) => {
   const pageNumber = parseInt(page, 10) || DEFAULT_PAGE;
   const resultsPerPageNumber = parseInt(resultsPerPage, 10) || DEFAULT_RESULTS_PER_PAGE;
 
-  await mongoose.connect(uri, { useNewUrlParser: true });
   try {
     const collationSettings = { locale: 'en', strength: 2 };
 
@@ -37,7 +34,6 @@ router.get('/', async (req: Request, res: Response) => {
   } catch (e) {
     res.status(500).send(e.message);
   }
-  mongoose.connection.close();
 });
 
 export default router;
