@@ -15,3 +15,8 @@ app.set('port', port);
 const server = http.createServer(app);
 
 server.listen(port);
+
+process.on('SIGINT', () => {
+  mongoose.connection.close();
+  process.exit();
+});
