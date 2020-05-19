@@ -3,8 +3,6 @@ import mongoose from 'mongoose';
 
 // tslint:disable no-console
 export async function updateServicesDataInAllSongs() {
-  await mongoose.connect(process.env.MONGO_DB, { useNewUrlParser: true });
-
   const allSongs = await Song.find({});
 
   try {
@@ -15,7 +13,5 @@ export async function updateServicesDataInAllSongs() {
   } catch (error) {
     console.log(error.message);
   }
-
-  await mongoose.connection.close();
 }
 // tslint:enable no-console
