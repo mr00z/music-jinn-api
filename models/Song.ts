@@ -53,7 +53,7 @@ class Song extends mongoose.Model implements ISong {
       if (this.servicesData.hasOwnProperty(connectorName)) {
         const element = this.servicesData[connectorName];
 
-        if (!element || isDateLaterThan(7, element.updatedAt)) {
+        if (!element || isDateLaterThan(90, element.updatedAt)) {
           const connector = connectorsFactory.getConnector(connectorName);
 
           element.responseData = await connector.getServiceData();
