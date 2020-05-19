@@ -16,8 +16,8 @@ app.set('port', port);
 
 const server = http.createServer(app);
 
-// run every month on 1st at 01:00 AM
-cron.schedule('0 1 1 * *', async () => {
+// run every day at 02:00 AM
+cron.schedule('0 2 * * *', async () => {
   // tslint:disable no-console
   console.log('Running services data update job...');
   await updateServicesDataInAllSongs();
