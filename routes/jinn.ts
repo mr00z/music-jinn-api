@@ -27,16 +27,18 @@ router.get('/byMood/', async (req: Request, res: Response) => {
       else dbQuery.where('genres', queryStr.genres);
     }
 
-    const queryResult: ISongDocument | ISongDocument[] = await dbQuery.exec();
+    let queryResult: ISongDocument | ISongDocument[] = await dbQuery.exec();
 
     let song: ISongDocument;
 
     if (Array.isArray(queryResult)) {
       if (queryResult.length === 0) return res.status(204).end();
-      else song = queryResult[getRandomIndexForAnArray(queryResult)];
+      else {
+        const songsWithYTData = queryResult.filter((s) => s.servicesData.youtube !== undefined);
+        if (songsWithYTData.length === 0) return res.status(204).end();
+        song = songsWithYTData[getRandomIndexForAnArray(songsWithYTData)];
+      }
     } else song = queryResult;
-
-    await song.updateServicesData();
 
     res.send(song);
   } catch (e) {
