@@ -24,7 +24,7 @@ router.get('/byMood/', async (req: Request, res: Response) => {
       else dbQuery.where('genres', queryStr.genres);
     }
 
-    let queryResult: ISongDocument | ISongDocument[] = await dbQuery.exec();
+    const queryResult: ISongDocument | ISongDocument[] = await dbQuery.exec();
 
     let song: ISongDocument;
 
