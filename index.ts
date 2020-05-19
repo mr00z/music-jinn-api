@@ -2,8 +2,11 @@ import http from 'http';
 import { config } from 'dotenv';
 import { resolve } from 'path';
 import cron from 'node-cron';
+import mongoose from 'mongoose';
 
 config({ path: resolve(__dirname, '../.env') });
+
+mongoose.connect(process.env.MONGO_DB, { useNewUrlParser: true, useUnifiedTopology: true });
 
 import app from './app';
 import { updateServicesDataInAllSongs } from './helpers/jobs';
@@ -23,3 +26,8 @@ cron.schedule('0 1 1 * *', async () => {
 });
 
 server.listen(port);
+
+process.on('SIGINT', () => {
+  mongoose.connection.close();
+  process.exit();
+});
